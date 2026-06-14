@@ -26,6 +26,20 @@ class Settings:
             Secrets.APP_ENV or "development"
         ).lower()
 
+        # Bootstrap Admin
+
+        self.postgres_admin_user = (
+            Secrets.POSTGRES_ADMIN_USER
+        )
+
+        self.postgres_admin_password = (
+            Secrets.POSTGRES_ADMIN_PASSWORD
+        )
+
+        self.auto_create_database = (
+            Secrets.AUTO_CREATE_DATABASE == "True"
+        )
+
         # Database
 
         self.database_host = Secrets.DATABASE_HOST
@@ -66,6 +80,38 @@ class Settings:
         self.max_retries = 3
 
         self.request_timeout = 30
+
+        self.retry_backoff_factor = 2
+
+        self.retry_statuses = [429, 500, 502, 503, 504]
+
+        self.db_pool_size = int(
+        Secrets.DB_POOL_SIZE or 10
+       )
+
+        self.db_max_overflow = int(
+        Secrets.DB_MAX_OVERFLOW or 20
+      )
+        self.db_pool_timeout = int(
+        Secrets.DB_POOL_TIMEOUT or 30
+        )
+
+        self.db_pool_recycle = int(
+        Secrets.DB_POOL_RECYCLE or 1800
+        )
+
+        self.db_pool_pre_ping = Secrets.DB_POOL_PRE_PING == "True"
+
+
+
+        self.db_echo = Secrets.DB_ECHO == "True"
+
+
+
+
+
+
+
 
     # ==================================
     # PATHS
@@ -113,6 +159,20 @@ class Settings:
 
     def _validate(self):
 
+        if self.auto_create_database:
+
+          admin_required = {
+            "POSTGRES_ADMIN_USER":
+            self.postgres_admin_user,
+
+           "POSTGRES_ADMIN_PASSWORD":
+            self.postgres_admin_password,
+
+            "AUTO_CREATE_DATABASE":
+            self.auto_create_database,
+        }
+
+
         required = {
             "DATABASE_HOST": self.database_host,
             "DATABASE_NAME": self.database_name,
@@ -158,6 +218,17 @@ class Settings:
             f"{self.database_host}:"
             f"{self.database_port}/"
             f"{self.database_name}"
+        )
+
+    @property
+    def admin_database_url(self):
+
+        return (
+            f"postgresql+psycopg2://"
+            f"{self.postgres_admin_user}:"
+            f"{self.postgres_admin_password}@"
+            f"{self.database_host}:"
+            f"{self.database_port}/postgres"
         )
 
     # ==================================

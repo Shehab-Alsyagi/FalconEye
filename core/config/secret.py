@@ -18,6 +18,10 @@ class Secrets:
 
     APP_ENV = os.getenv("APP_ENV")
 
+    POSTGRES_ADMIN_USER = os.getenv("POSTGRES_ADMIN_USER")
+    POSTGRES_ADMIN_PASSWORD = os.getenv("POSTGRES_ADMIN_PASSWORD")
+    AUTO_CREATE_DATABASE = os.getenv("AUTO_CREATE_DATABASE")
+
     DATABASE_HOST = os.getenv("DATABASE_HOST")
     DATABASE_PORT = os.getenv("DATABASE_PORT")
     DATABASE_NAME = os.getenv("DATABASE_NAME")
@@ -29,3 +33,11 @@ class Secrets:
     ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
     SECRET_KEY = os.getenv("SECRET_KEY")
+
+    DB_POOL_SIZE = os.getenv("DB_POOL_SIZE")
+    DB_MAX_OVERFLOW = os.getenv("DB_MAX_OVERFLOW")
+    DB_POOL_RECYCLE = os.getenv("DB_POOL_RECYCLE")
+    DB_POOL_TIMEOUT = os.getenv("DB_POOL_TIMEOUT")
+    DB_POOL_PRE_PING = os.getenv("DB_POOL_PRE_PING")
+
+    DB_ECHO = os.getenv("DB_ECHO")
