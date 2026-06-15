@@ -5,7 +5,9 @@ from core.config.exceptions import ConfigurationError
 
 
 class Settings:
-    """ Centralized configuration class that loads settings from environment variables and secrets, builds important paths, and validates critical values. """
+    """ Centralized configuration class that loads settings from environment variables and secrets,
+        builds important paths, and validates critical values.
+    """
     def __init__(self):
 
         self.project_root = Path(__file__).resolve().parents[2]
@@ -16,6 +18,7 @@ class Settings:
 
         self._validate()
 
+
     # ==================================
     # ENVIRONMENT
     # ==================================
@@ -23,13 +26,17 @@ class Settings:
     def _load_environment(self):
 
         self.app_env = (
-            Secrets.APP_ENV or "development"
-        ).lower()
+            Secrets.APP_ENV
+        )
 
         # Bootstrap Admin
 
         self.postgres_admin_user = (
             Secrets.POSTGRES_ADMIN_USER
+        )
+
+        self.postgres_admin_db = (
+            Secrets.POSTGRES_ADMIN_DB
         )
 
         self.postgres_admin_password = (
@@ -70,11 +77,11 @@ class Settings:
         self.secret_key = Secrets.SECRET_KEY
 
         # Logging
-
-        self.log_level = "INFO"
+        self.LOGS_DIR = self.project_root / "logs"
+        self.LOG_LEVEL = "INFO"
+        self.LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
         # Workers
-
         self.max_download_workers = 5
 
         self.max_retries = 3
@@ -102,16 +109,7 @@ class Settings:
 
         self.db_pool_pre_ping = Secrets.DB_POOL_PRE_PING == "True"
 
-
-
         self.db_echo = Secrets.DB_ECHO == "True"
-
-
-
-
-
-
-
 
     # ==================================
     # PATHS
@@ -155,23 +153,17 @@ class Settings:
     # ==================================
     # VALIDATION
     # ==================================
-    """ Validates critical configuration values and raises errors if any are missing or invalid. """
+    """ Validates critical configuration values and
+        raises errors if any are missing or invalid.
+    """
 
     def _validate(self):
 
         if self.auto_create_database:
 
-          admin_required = {
-            "POSTGRES_ADMIN_USER":
-            self.postgres_admin_user,
+         admin_required = {
 
-           "POSTGRES_ADMIN_PASSWORD":
-            self.postgres_admin_password,
-
-            "AUTO_CREATE_DATABASE":
-            self.auto_create_database,
-        }
-
+          }
 
         required = {
             "DATABASE_HOST": self.database_host,
